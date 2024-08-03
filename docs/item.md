@@ -10,7 +10,7 @@ Request Body:
 ```json
   {
     "name": "pen gift from ex",
-    "description": "this pen is very precious to me, blue color with a little bit of correction pen mark on the top",
+    "description": "this pen is very precious to me, blue color with a little bit of correction pen mark on the top", // optional
     "locationId": 2, 
   }
 ```
@@ -20,6 +20,7 @@ Response Body (Success):
 ```json
   {
     "data": {
+      "id": 1,
       "name": "pen gift from ex",
       "description": "this pen is very precious to me, blue color with a little bit of correction pen mark on the top",
       "locationId": 2, 
@@ -112,7 +113,7 @@ Request Body:
 ```json
   {
     "name": "new pen gift from ex",
-    "description": "new this pen is very precious to me, blue color with a little bit of correction pen mark on the top",
+    "description": "new this pen is very precious to me, blue color with a little bit of correction pen mark on the top", // optional
     "locationId": 2, 
   }
 ```
