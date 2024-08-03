@@ -51,8 +51,19 @@ Response Body (Success):
         "name": "pen gift from ex",
         "description": "this pen is very precious to me, blue color with a little bit of correction pen mark on the top",
         "locationId": 2, 
-      }
-    ]
+      },
+      {
+        "id": 2,
+        "name": "car key",
+        "description": "a lamborghini key",
+        "locationId": 3, 
+      },
+    ],
+    "paging" : {
+      "current_page" : 1,
+      "total_page" : 10,
+      "size" : 10
+    }
   }
 ```
 
