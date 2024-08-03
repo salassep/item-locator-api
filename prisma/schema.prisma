@@ -12,3 +12,39 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id Int @id @default(autoincrement())
+  username String @unique @db.VarChar(100)
+  password String @db.VarChar(255)
+  name String @db.VarChar(100)
+  token String? @db.VarChar(100)
+
+  locations Location[]
+
+  @@map("users")
+}
+
+model Location {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(100)
+  description String @db.VarChar(255)
+  userId Int @map("user_id")
+
+  user User @relation(fields: [userId], references: [id])
+
+  item Item[]
+
+  @@map("locations")
+}
+
+model Item {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(100)
+  description String @db.VarChar(255)
+  locationId Int @map("location_id")
+
+  location Location @relation(fields: [locationId], references: [id])
+
+  @@map("items")
+}
