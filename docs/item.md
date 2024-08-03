@@ -39,6 +39,11 @@ Response Body (Failed):
 ## Get Items
 Endpoint: POST /api/items
 
+Query Parameter:
+  - name: string
+  - page: number, default 1
+  - size: number, default 10
+
 Request Header:
   - X-API-TOKEN: token
 
