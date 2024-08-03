@@ -1,4 +1,4 @@
-# User API Spec
+# Location API Spec
 ## Create Location
 Endpoint: POST /api/locations
 
