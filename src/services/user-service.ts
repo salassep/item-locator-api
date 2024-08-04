@@ -5,6 +5,7 @@ import {
   CreateUserRequest, 
   LoginUserRequest, 
   toUserResponse, 
+  UpdateUserRequest, 
   UserResponse 
 } from "../models/user-model";
 import { UserValidation } from "../validations/user-validation";
@@ -72,6 +73,44 @@ export class UserService {
 
   static async get(user: User): Promise<UserResponse> {
     return toUserResponse(user);
+  }
+
+  static async update(user: User, request: UpdateUserRequest): Promise<UserResponse> {
+    const updateRequest = Validation.validate(UserValidation.UPDATE, request);
+
+    if (updateRequest.name) {
+      user.name = updateRequest.name
+    }
+
+    if (updateRequest.username) {
+      const totalUserWithSameUsername = await prismaClient.user.count({
+        where: {
+          id: {
+            not: user.id
+          },
+          username: updateRequest.username
+        }
+      });
+  
+      if (totalUserWithSameUsername > 0) {
+        throw new ResponseError(400, "Username already exists");
+      }
+
+      user.username = updateRequest.username;
+    }
+
+    if (updateRequest.password) {
+      user.password = await bcrypt.hash(updateRequest.password, 10);
+    }
+
+    const result = await prismaClient.user.update({
+      where: {
+        id: user.id
+      },
+      data: user
+    });
+
+    return toUserResponse(result);
   }
 
 }
