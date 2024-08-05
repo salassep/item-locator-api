@@ -1,4 +1,4 @@
-import { Location, User } from "@prisma/client";
+import { Item, Location, User } from "@prisma/client";
 import { prismaClient } from "../src/applications/database";
 import bcrypt from "bcrypt";
 
@@ -93,4 +93,20 @@ export class ItemTest {
       }
     });
   }
+
+  static async get(): Promise<Item> {
+    const location = await LocationTest.get();
+    const item = await prismaClient.item.findFirst({
+      where: {
+        locationId: location.id
+      }
+    });
+
+    if (!item) {
+      throw new Error("item is not found");
+    }
+
+    return item;
+  }
+
 }

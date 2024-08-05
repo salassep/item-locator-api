@@ -17,4 +17,16 @@ export class ItemController {
     }
   }
 
+  static async get(req: UserRequest, res: Response, next: NextFunction) {
+    try {
+      const itemId = Number(req.params.itemId);
+      const response = await ItemService.get(req.user!, itemId);
+      res.status(200).json({
+        data: response
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
+
 }

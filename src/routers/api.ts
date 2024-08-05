@@ -19,5 +19,6 @@ apiRouter.put('/api/locations/:locationId(\\d+)', LocationController.update);
 apiRouter.delete('/api/locations/:locationId(\\d+)', LocationController.remove);
 apiRouter.get('/api/locations', LocationController.getAll);
 
-// item appi
+// item api
 apiRouter.post('/api/items', ItemController.create);
+apiRouter.get('/api/items/:itemId(\\d+)', ItemController.get);
