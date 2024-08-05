@@ -30,4 +30,32 @@ describe('POST /api/locations', () => {
     expect(response.body.data.description).toBe("description location");
   });
 
+  it('should reject create new location if data is invalid', async () => {
+    const response = await supertest(app)
+      .post("/api/locations")
+      .set("X-API-TOKEN", "test")
+      .send({
+        name: "",
+        description: "description location",
+      })
+    
+    logger.debug(response.body);
+    expect(response.status).toBe(400);
+    expect(response.body.errors).toBeDefined();
+  });
+
+  it('should reject create new location if token is invalid', async () => {
+    const response = await supertest(app)
+      .post("/api/locations")
+      .set("X-API-TOKEN", "wrong")
+      .send({
+        name: "test location",
+        description: "description location",
+      })
+    
+    logger.debug(response.body);
+    expect(response.status).toBe(401);
+    expect(response.body.errors).toBeDefined();
+  });
+
 });
