@@ -40,6 +40,7 @@ Response Body (Failed):
 Endpoint: POST /api/items
 
 Query Parameter:
+
   - name: string
   - page: number, default 1
   - size: number, default 10
