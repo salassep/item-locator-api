@@ -59,32 +59,6 @@ Response Body (Failed):
   }
 ```
 
-## Get Location
-Endpoint: GET /api/locations/:id
-
-Request Header:
-  - X-API-TOKEN: token
-
-Response Body (Success):
-
-```json
-  {
-    "data": {
-        "id": 1,
-        "name": "on top of the wardrobe",
-        "description": "watch out when grabbing things from here, cause if they drop back there, it will pain to get them."
-    }
-  }
-```
-
-Response Body (Failed):
-
-```json
-  {
-    "errors": "Location not found, ..."
-  }
-```
-
 ## Update Location
 Endpoint: PUT /api/locations/:id
 
