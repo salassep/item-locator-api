@@ -42,3 +42,11 @@ export class UserTest {
   }
 
 }
+
+export class LocationTest {
+
+  static async delete() {
+    await prismaClient.location.deleteMany({});
+  }
+
+}
