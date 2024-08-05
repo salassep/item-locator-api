@@ -58,4 +58,16 @@ export class LocationService {
     return toLocationResponse(location);
   }
 
+  static async remove(user: User, locationId: number): Promise<LocationResponse> {
+    await this.checkLocationExists(user.id, locationId);
+
+    const location = await prismaClient.location.delete({
+      where: {
+        id: locationId,
+      }
+    });
+
+    return toLocationResponse(location);
+  }
+
 }

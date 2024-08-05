@@ -43,4 +43,16 @@ export class LocationController {
     }
   }
 
+  static async remove(req: UserRequest, res: Response, next: NextFunction) {
+    try {
+      const locationId = Number(req.params.locationId);
+      await LocationService.remove(req.user!, locationId);
+      res.status(200).json({
+        data: "OK",
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
+
 }

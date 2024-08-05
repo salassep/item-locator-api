@@ -170,3 +170,39 @@ describe('PUT /api/locations/:locationId', () => {
   });
 
 });
+
+describe('DELETE /api/locations/:locationId', () => {
+
+  beforeEach(async () => {
+    await UserTest.create();
+    await LocationTest.create();
+  });
+
+  afterEach(async () =>  {
+    await LocationTest.delete();
+    await UserTest.delete();
+  });
+
+  it('should be able to delete location', async () => {
+    const location = await LocationTest.get();
+    const response = await supertest(app)
+      .delete(`/api/locations/${location.id}`)
+      .set("X-API-TOKEN", "test");
+    
+    logger.debug(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.data).toBe("OK");
+  });
+
+  it('should reject delete location if location is not exists', async () => {
+    const location = await LocationTest.get();
+    const response = await supertest(app)
+      .delete(`/api/locations/${location.id + 1}`)
+      .set("X-API-TOKEN", "test");
+
+    logger.debug(response.body);
+    expect(response.status).toBe(404);
+    expect(response.body.errors).toBeDefined();
+  });
+
+});
