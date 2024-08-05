@@ -76,3 +76,21 @@ export class LocationTest {
   }
 
 }
+
+export class ItemTest {
+
+  static async delete() {
+    await prismaClient.item.deleteMany({});
+  } 
+
+  static async create() {
+    const location = await LocationTest.get();
+    await prismaClient.item.create({
+      data:{
+        name: "test item",
+        description: "description item",
+        locationId: location.id,
+      }
+    });
+  }
+}
