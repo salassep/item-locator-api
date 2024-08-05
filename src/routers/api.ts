@@ -13,3 +13,4 @@ apiRouter.delete('/api/users/current', UserController.logout);
 
 // location api
 apiRouter.post('/api/locations', LocationController.create);
+apiRouter.get('/api/locations/:locationId(\\d+)', LocationController.get);

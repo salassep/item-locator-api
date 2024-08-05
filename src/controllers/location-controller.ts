@@ -17,4 +17,16 @@ export class LocationController {
     }
   }
 
+  static async get(req: UserRequest, res: Response, next: NextFunction) {
+    try {
+      const locationId = Number(req.params.locationId);
+      const response = await LocationService.get(req.user!, locationId);
+      res.status(200).json({
+        data: response,
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
+
 }

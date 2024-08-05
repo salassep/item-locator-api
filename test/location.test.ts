@@ -59,3 +59,52 @@ describe('POST /api/locations', () => {
   });
 
 });
+
+describe('GET /api/locations/:locationId', () => {
+  
+  beforeEach(async () => {
+    await UserTest.create();
+    await LocationTest.create();
+  });
+
+  afterEach(async () =>  {
+    await LocationTest.delete();
+    await UserTest.delete();
+  });
+
+  it('should be able to get location', async () => {
+    const location = await LocationTest.get();
+    const response = await supertest(app)
+      .get(`/api/locations/${location.id}`)
+      .set("X-API-TOKEN", "test")
+    
+    logger.debug(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.data.id).toBe(location.id);
+    expect(response.body.data.name).toBe(location.name);
+    expect(response.body.data.description).toBe(location.description);
+  });
+
+  it('should reject get location if location is not found', async () => {
+    const location = await LocationTest.get();
+    const response = await supertest(app)
+      .get(`/api/locations/${location.id + 1}`)
+      .set("X-API-TOKEN", "test");
+
+    logger.debug(response.body);
+    expect(response.status).toBe(404);
+    expect(response.body.errors).toBeDefined();
+  });
+
+  it('should reject get location if token is not valid', async () => {
+    const location = await LocationTest.get();
+    const response = await supertest(app)
+      .get(`/api/locations/${location.id + 1}`)
+      .set("X-API-TOKEN", "test_2");
+
+    logger.debug(response.body);
+    expect(response.status).toBe(404);
+    expect(response.body.errors).toBeDefined();
+  });
+
+});

@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { Location, User } from "@prisma/client";
 import { prismaClient } from "../src/applications/database";
 import bcrypt from "bcrypt";
 
@@ -47,6 +47,32 @@ export class LocationTest {
 
   static async delete() {
     await prismaClient.location.deleteMany({});
+  }
+
+  static async create() {
+    const user = await UserTest.get();
+    await prismaClient.location.create({
+      data: {
+        name: "test location",
+        description: "description location",
+        userId: user.id
+      }
+    });
+  }
+
+  static async get(): Promise<Location> {
+    const user = await UserTest.get();
+    const location  = await prismaClient.location.findFirst({
+      where: {
+        userId: user.id
+      }
+    });
+
+    if (!location) {
+      throw new Error("location is not found");
+    }
+
+    return location;
   }
 
 }
