@@ -22,3 +22,4 @@ apiRouter.get('/api/locations', LocationController.getAll);
 // item api
 apiRouter.post('/api/items', ItemController.create);
 apiRouter.get('/api/items/:itemId(\\d+)', ItemController.get);
+apiRouter.put('/api/items/:itemId(\\d+)', ItemController.update);

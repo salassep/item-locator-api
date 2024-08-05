@@ -14,6 +14,7 @@ export type CreateItemRequest = {
 }
 
 export type UpdateItemRequest = {
+  id: number,
   name: string, 
   description?: string,
   locationId: number

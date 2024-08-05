@@ -120,3 +120,102 @@ describe('GET /api/items/:itemId', () => {
   });
 
 });
+
+describe('PUT /api/items/:itemId', () => {
+
+  beforeEach(async () => {
+    await UserTest.create();
+    await LocationTest.create();
+    await ItemTest.create();
+  });
+
+  afterEach(async () =>  {
+    await ItemTest.delete();
+    await LocationTest.delete();
+    await UserTest.delete();
+  });
+
+  it('should be able to update item', async () => {
+    const item = await ItemTest.get();
+    const response = await supertest(app)
+      .put(`/api/items/${item.id}`)
+      .set('X-API-TOKEN', "test")
+      .send({
+        name: "new test item",
+        description: "new description item",
+        locationId: item.locationId
+      })
+    
+    logger.debug(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.data.id).toBe(item.id);
+    expect(response.body.data.name).toBe("new test item");
+    expect(response.body.data.description).toBe("new description item");
+    expect(response.body.data.locationId).toBe(item.locationId);
+  });
+
+  it('should reject update item if request is invalid', async () => {
+    const item = await ItemTest.get();
+    const response = await supertest(app)
+      .put(`/api/items/${item.id}`)
+      .set('X-API-TOKEN', "test")
+      .send({
+        name: "",
+        description: "new description item",
+        locationId: item.locationId
+      })
+    
+    logger.debug(response.body);
+    expect(response.status).toBe(400);
+    expect(response.body.errors).toBeDefined();
+  });
+
+  it('should reject update item if item is not exists', async () => {
+    const item = await ItemTest.get();
+    const response = await supertest(app)
+      .put(`/api/items/${item.id + 1}`)
+      .set('X-API-TOKEN', "test")
+      .send({
+        name: "new test item",
+        description: "new description item",
+        locationId: item.locationId
+      })
+    
+    logger.debug(response.body);
+    expect(response.status).toBe(404);
+    expect(response.body.errors).toBeDefined();
+  });
+
+  it('should reject update item if location is not exists', async () => {
+    const item = await ItemTest.get();
+    const response = await supertest(app)
+      .put(`/api/items/${item.id}`)
+      .set('X-API-TOKEN', "test")
+      .send({
+        name: "new test item",
+        description: "new description item",
+        locationId: item.locationId + 1
+      })
+    
+    logger.debug(response.body);
+    expect(response.status).toBe(404);
+    expect(response.body.errors).toBeDefined();
+  });
+
+  it('should reject update item if token is not valid', async () => {
+    const item = await ItemTest.get();
+    const response = await supertest(app)
+      .put(`/api/items/${item.id}`)
+      .set('X-API-TOKEN', "test_2")
+      .send({
+        name: "new test item",
+        description: "new description item",
+        locationId: item.locationId
+      })
+    
+    logger.debug(response.body);
+    expect(response.status).toBe(404);
+    expect(response.body.errors).toBeDefined();
+  });
+
+});

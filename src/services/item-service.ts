@@ -1,5 +1,5 @@
 import { Item, User } from "@prisma/client";
-import { CreateItemRequest, ItemResponse, toItemResponse } from "../models/item-model";
+import { CreateItemRequest, ItemResponse, toItemResponse, UpdateItemRequest } from "../models/item-model";
 import { Validation } from "../validations/validation";
 import { ItemValidation } from "../validations/item-validation";
 import { LocationService } from "./location-service";
@@ -36,8 +36,23 @@ export class ItemService {
     return item;
   }
 
-  static async get(user:User, itemId: number): Promise<ItemResponse> {
+  static async get(user: User, itemId: number): Promise<ItemResponse> {
     const item = await this.checkItemExists(user.id, itemId);
+    return toItemResponse(item);
+  }
+
+  static async update(user: User, request: UpdateItemRequest): Promise<ItemResponse> {
+    const updateRequest = Validation.validate(ItemValidation.UPDATE, request);
+    await LocationService.checkLocationExists(user.id, updateRequest.locationId);
+    await this.checkItemExists(user.id, updateRequest.id);
+
+    const item = await prismaClient.item.update({
+      where: {
+        id: updateRequest.id
+      },
+      data: updateRequest
+    });
+
     return toItemResponse(item);
   }
 
