@@ -1,5 +1,5 @@
 import { Location, User } from "@prisma/client";
-import { CreateLocationRequest, LocationResponse, toLocationResponse } from "../models/location-model";
+import { CreateLocationRequest, LocationResponse, toLocationResponse, UpdateLocationRequest } from "../models/location-model";
 import { Validation } from "../validations/validation";
 import { LocationValidation } from "../validations/location-validation";
 import { prismaClient } from "../applications/database";
@@ -40,6 +40,21 @@ export class LocationService {
 
   static async get(user: User, locationId: number): Promise<LocationResponse> {
     const location = await this.checkLocationExists(user.id, locationId);
+    return toLocationResponse(location);
+  }
+
+  static async update(user: User, request: UpdateLocationRequest): Promise<LocationResponse> {
+    const updateRequest = Validation.validate(LocationValidation.UPDATE, request);
+    await this.checkLocationExists(user.id, updateRequest.id);
+
+    const location = await prismaClient.location.update({
+      where: {
+        id: updateRequest.id,
+        userId: user.id,
+      },
+      data: updateRequest
+    });
+
     return toLocationResponse(location);
   }
 

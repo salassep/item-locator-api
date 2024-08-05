@@ -108,3 +108,65 @@ describe('GET /api/locations/:locationId', () => {
   });
 
 });
+
+
+describe('PUT /api/locations/:locationId', () => {
+
+  beforeEach(async () => {
+    await UserTest.create();
+    await LocationTest.create();
+  });
+
+  afterEach(async () =>  {
+    await LocationTest.delete();
+    await UserTest.delete();
+  });
+
+  it('should be able to update location', async () => {
+    const location = await LocationTest.get();
+    const response = await supertest(app)
+      .put(`/api/locations/${location.id}`)
+      .set("X-API-TOKEN", "test")
+      .send({
+        name: "new test location",
+        description: "new description location",
+      });
+
+    logger.debug(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.data.id).toBe(location.id);
+    expect(response.body.data.name).toBe("new test location");
+    expect(response.body.data.description).toBe("new description location");
+  });
+
+  it('should reject update location if request is invalid', async () => {
+    const location = await LocationTest.get();
+    const response = await supertest(app)
+      .put(`/api/locations/${location.id}`)
+      .set("X-API-TOKEN", "test")
+      .send({
+        name: "",
+        description: "new description location",
+      });
+
+    logger.debug(response.body);
+    expect(response.status).toBe(400);
+    expect(response.body.errors).toBeDefined();
+  });
+
+  it('should reject update location if location is not exists', async () => {
+    const location = await LocationTest.get();
+    const response = await supertest(app)
+      .put(`/api/locations/${location.id + 1}`)
+      .set("X-API-TOKEN", "test")
+      .send({
+        name: "new test location",
+        description: "new description location",
+      });
+
+    logger.debug(response.body);
+    expect(response.status).toBe(404);
+    expect(response.body.errors).toBeDefined();
+  });
+
+});
