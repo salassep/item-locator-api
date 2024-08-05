@@ -17,6 +17,12 @@ export type UpdateLocationRequest = {
   description?: string,
 }
 
+export type GetLocationsRequest = {
+  name?: string,
+  page: number,
+  size: number,
+}
+
 export function toLocationResponse(location: Location): LocationResponse {
   return {
     id: location.id,

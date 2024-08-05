@@ -206,3 +206,66 @@ describe('DELETE /api/locations/:locationId', () => {
   });
 
 });
+
+describe('GET /api/locations', () => {
+
+  beforeEach(async () => {
+    await UserTest.create();
+    await LocationTest.create();
+  });
+
+  afterEach(async () =>  {
+    await LocationTest.delete();
+    await UserTest.delete();
+  });
+
+  it('should be able to search location using name', async () => {
+    const response = await supertest(app)
+      .get('/api/locations')
+      .query({
+        name: "test",
+      })
+      .set("X-API-TOKEN", "test");
+    
+    logger.debug(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.data.length).toBe(1);
+    expect(response.body.paging.currentPage).toBe(1);
+    expect(response.body.paging.totalPage).toBe(1);
+    expect(response.body.paging.size).toBe(10);
+  });
+
+  it('should be able to search location with no result', async() => {
+    const response = await supertest(app)
+      .get('/api/locations')
+      .query({
+        name: "wrong",
+      })
+      .set("X-API-TOKEN", "test");
+  
+    logger.debug(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.data.length).toBe(0);
+    expect(response.body.paging.currentPage).toBe(1);
+    expect(response.body.paging.totalPage).toBe(0);
+    expect(response.body.paging.size).toBe(10);
+  });
+
+  it('should be able to search location with paging', async() => {
+    const response = await supertest(app)
+      .get('/api/locations')
+      .query({
+        page: 2,
+        size: 1
+      })
+      .set("X-API-TOKEN", "test");
+  
+    logger.debug(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.data.length).toBe(0);
+    expect(response.body.paging.currentPage).toBe(2);
+    expect(response.body.paging.totalPage).toBe(1);
+    expect(response.body.paging.size).toBe(1);
+  });
+
+});

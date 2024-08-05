@@ -1,9 +1,10 @@
 import { Location, User } from "@prisma/client";
-import { CreateLocationRequest, LocationResponse, toLocationResponse, UpdateLocationRequest } from "../models/location-model";
+import { CreateLocationRequest, GetLocationsRequest, LocationResponse, toLocationResponse, UpdateLocationRequest } from "../models/location-model";
 import { Validation } from "../validations/validation";
 import { LocationValidation } from "../validations/location-validation";
 import { prismaClient } from "../applications/database";
 import { ResponseError } from "../errors/response-error";
+import { Pageable } from "../models/page";
 
 export class LocationService {
 
@@ -22,6 +23,39 @@ export class LocationService {
     return toLocationResponse(location);
   }
 
+  static async getAll(user: User, request:GetLocationsRequest): Promise<Pageable<LocationResponse>> {
+    const getRequest = Validation.validate(LocationValidation.SEARCH, request);
+    const skip = (getRequest.page - 1) * getRequest.size;
+
+    const locations = await prismaClient.location.findMany({
+      where: {
+        userId: user.id,
+        name: {
+          contains: getRequest.name,
+        }
+      },
+      take: getRequest.size,
+      skip: skip,
+    });
+    
+    const total = await prismaClient.location.count({
+      where: {
+        userId: user.id,
+        name: {
+          contains: getRequest.name,
+        }
+      },
+    });
+
+    return {
+      data: locations.map(location => toLocationResponse(location)),
+      paging: {
+        size: getRequest.size,
+        totalPage: Math.ceil(total / getRequest.size),
+        currentPage: getRequest.page,
+      }
+    }
+  }
 
   static async checkLocationExists(userId: number, locationId: number): Promise<Location> {
     const location = await prismaClient.location.findFirst({

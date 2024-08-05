@@ -16,3 +16,4 @@ apiRouter.post('/api/locations', LocationController.create);
 apiRouter.get('/api/locations/:locationId(\\d+)', LocationController.get);
 apiRouter.put('/api/locations/:locationId(\\d+)', LocationController.update);
 apiRouter.delete('/api/locations/:locationId(\\d+)', LocationController.remove);
+apiRouter.get('/api/locations', LocationController.getAll);
