@@ -4,7 +4,9 @@
   "description": "Item Locator API",
   "main": "index.js",
   "scripts": {
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "build": "tsc",
+    "start": "node dist/main.js"
   },
   "jest": {
     "transform": {
