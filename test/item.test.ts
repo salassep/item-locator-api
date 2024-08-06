@@ -1,5 +1,5 @@
 import supertest from 'supertest';
-import { UserTest, LocationTest, ItemTest } from './test-util.test';
+import { UserTest, LocationTest, ItemTest } from './test-util';
 import { app } from '../src/applications/app';
 import { logger } from '../src/applications/logging';
 

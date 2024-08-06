@@ -1,7 +1,7 @@
 import { app } from '../src/applications/app';
 import supertest from "supertest";
 import { logger } from '../src/applications/logging';
-import { UserTest } from './test-util.test';
+import { UserTest } from './test-util';
 import bcrypt from 'bcrypt';
 
 describe('POST /api/users', () => {
