@@ -15,4 +15,11 @@ export class ItemValidation {
     locationId: z.number().positive()
   })
 
+  static readonly SEARCH : ZodType = z.object({
+    name: z.string().optional(),
+    locationId: z.number().positive().optional(),
+    page: z.number().min(1).positive(),
+    size: z.number().min(1).max(100).positive()
+  });
+
 }

@@ -269,3 +269,84 @@ describe('DELETE /api/items/:itemId', () => {
   });
 
 });
+
+describe('GET /api/items', () => {
+
+  beforeEach(async () => {
+    await UserTest.create();
+    await LocationTest.create();
+    await ItemTest.create();
+  });
+
+  afterEach(async () =>  {
+    await ItemTest.delete();
+    await LocationTest.delete();
+    await UserTest.delete();
+  });
+
+  it('should be able to search item using name', async () => {
+    const response = await supertest(app)
+      .get('/api/items')
+      .query({
+        name: "test",
+      })
+      .set("X-API-TOKEN", "test");
+    
+    logger.debug(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.data.length).toBe(1);
+    expect(response.body.paging.currentPage).toBe(1);
+    expect(response.body.paging.totalPage).toBe(1);
+    expect(response.body.paging.size).toBe(10);
+  });
+
+  it('should be able to search item using location id', async () => {
+    const location = await LocationTest.get();
+    const response = await supertest(app)
+      .get('/api/items')
+      .query({
+        locationId: location.id
+      })
+      .set("X-API-TOKEN", "test");
+    
+    logger.debug(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.data.length).toBe(1);
+    expect(response.body.paging.currentPage).toBe(1);
+    expect(response.body.paging.totalPage).toBe(1);
+    expect(response.body.paging.size).toBe(10);
+  });
+
+  it('should be able to search item with no result', async() => {
+    const response = await supertest(app)
+      .get('/api/items')
+      .query({
+        name: "wrong",
+      })
+      .set("X-API-TOKEN", "test");
+  
+    logger.debug(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.data.length).toBe(0);
+    expect(response.body.paging.currentPage).toBe(1);
+    expect(response.body.paging.totalPage).toBe(0);
+    expect(response.body.paging.size).toBe(10);
+  });
+
+  it('should be able to search item with paging', async() => {
+    const response = await supertest(app)
+      .get('/api/items')
+      .query({
+        page: 2,
+        size: 1
+      })
+      .set("X-API-TOKEN", "test");
+  
+    logger.debug(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.data.length).toBe(0);
+    expect(response.body.paging.currentPage).toBe(2);
+    expect(response.body.paging.totalPage).toBe(1);
+    expect(response.body.paging.size).toBe(1);
+  });
+});

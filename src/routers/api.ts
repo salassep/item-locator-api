@@ -24,3 +24,4 @@ apiRouter.post('/api/items', ItemController.create);
 apiRouter.get('/api/items/:itemId(\\d+)', ItemController.get);
 apiRouter.put('/api/items/:itemId(\\d+)', ItemController.update);
 apiRouter.delete('/api/items/:itemId(\\d+)', ItemController.remove);
+apiRouter.get('/api/items', ItemController.getAll);

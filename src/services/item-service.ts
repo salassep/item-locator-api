@@ -1,11 +1,12 @@
 import { Item, User } from "@prisma/client";
-import { CreateItemRequest, ItemResponse, toItemResponse, UpdateItemRequest } from "../models/item-model";
+import { CreateItemRequest, GetItemsRequest, ItemResponse, toItemResponse, UpdateItemRequest } from "../models/item-model";
 import { Validation } from "../validations/validation";
 import { ItemValidation } from "../validations/item-validation";
 import { LocationService } from "./location-service";
 import { prismaClient } from "../applications/database";
 import { ResponseError } from "../errors/response-error";
 import { toLocationResponse } from "../models/location-model";
+import { Pageable } from "../models/page";
 
 export class ItemService {
 
@@ -18,6 +19,56 @@ export class ItemService {
     });
 
     return toItemResponse(item);
+  }
+  
+  static async getAll(user: User, request: GetItemsRequest): Promise<Pageable<ItemResponse>> {
+    const getRequest = Validation.validate(ItemValidation.SEARCH, request);
+    const skip = (getRequest.page - 1) * getRequest.size;
+
+    const filters = [];
+
+    if (getRequest.name) {
+      filters.push({
+        name: {
+          contains: getRequest.name
+        }
+      });
+    }
+
+    if (getRequest.locationId) {
+      filters.push({
+        locationId: getRequest.locationId
+      });
+    }
+
+    const items = await prismaClient.item.findMany({
+      where: {
+        location: {
+          userId: user.id,
+        },
+        AND: filters
+      },
+      take: getRequest.size,
+      skip: skip,
+    });
+
+    const total = await prismaClient.item.count({
+      where: {
+        location: {
+          userId: user.id,
+        },
+        AND: filters
+      }
+    });
+
+    return {
+      data: items.map(item => toItemResponse(item)),
+      paging: {
+        size: getRequest.size,
+        totalPage: Math.ceil(total / getRequest.size),
+        currentPage: getRequest.page
+      }
+    }
   }
 
   static async checkItemExists(userId: number, itemId: number): Promise<Item> {

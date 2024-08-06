@@ -41,7 +41,8 @@ Endpoint: POST /api/items
 
 Query Parameter:
 
-  - name: string
+  - name: string, optional
+  - locationId: number, optional
   - page: number, default 1
   - size: number, default 10
 

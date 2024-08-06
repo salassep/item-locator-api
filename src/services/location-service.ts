@@ -23,7 +23,7 @@ export class LocationService {
     return toLocationResponse(location);
   }
 
-  static async getAll(user: User, request:GetLocationsRequest): Promise<Pageable<LocationResponse>> {
+  static async getAll(user: User, request: GetLocationsRequest): Promise<Pageable<LocationResponse>> {
     const getRequest = Validation.validate(LocationValidation.SEARCH, request);
     const skip = (getRequest.page - 1) * getRequest.size;
 
