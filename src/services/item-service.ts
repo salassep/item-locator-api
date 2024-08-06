@@ -5,6 +5,7 @@ import { ItemValidation } from "../validations/item-validation";
 import { LocationService } from "./location-service";
 import { prismaClient } from "../applications/database";
 import { ResponseError } from "../errors/response-error";
+import { toLocationResponse } from "../models/location-model";
 
 export class ItemService {
 
@@ -51,6 +52,18 @@ export class ItemService {
         id: updateRequest.id
       },
       data: updateRequest
+    });
+
+    return toItemResponse(item);
+  }
+
+  static async remove(user: User, itemId: number): Promise<ItemResponse> {
+    await this.checkItemExists(user.id, itemId);
+
+    const item = await prismaClient.item.delete({
+      where: {
+        id: itemId
+      }
     });
 
     return toItemResponse(item);

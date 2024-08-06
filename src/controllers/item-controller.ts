@@ -43,4 +43,16 @@ export class ItemController {
     }
   }
 
+  static async remove(req: UserRequest, res: Response, next: NextFunction) {
+    try {
+      const itemId = Number(req.params.itemId);
+      const response = await ItemService.remove(req.user!, itemId);
+      res.status(200).json({
+        data: 'OK'
+      });
+    } catch (e) {
+      next(e);
+    }
+  }
+
 }
