@@ -46,3 +46,7 @@ npm start
 - [User API Spec](docs/user.md)
 - [Item API Spec](docs/item.md)
 - [Location API Spec](docs/location.md)
+
+Or you can try it using the following insomnia collection
+
+ - [Insomnia Collection](insomnia-collection.json)
